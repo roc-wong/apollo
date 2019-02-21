@@ -12,6 +12,7 @@ public class EnvUtilsTest {
     assertEquals(Env.FAT, EnvUtils.transformEnv(Env.FAT.name().toLowerCase()));
     assertEquals(Env.UAT, EnvUtils.transformEnv(" " + Env.UAT.name().toUpperCase() + ""));
     assertEquals(Env.UNKNOWN, EnvUtils.transformEnv("someInvalidEnv"));
+    assertEquals(Env.ALIYUN_PRO, EnvUtils.transformEnv("ALIYUN_PRO"));
   }
 
   @Test
@@ -19,6 +20,7 @@ public class EnvUtilsTest {
     assertEquals(Env.DEV, Env.fromString(Env.DEV.name()));
     assertEquals(Env.FAT, Env.fromString(Env.FAT.name().toLowerCase()));
     assertEquals(Env.UAT, Env.fromString(" " + Env.UAT.name().toUpperCase() + ""));
+    assertEquals(Env.ALIYUN_PRO, Env.fromString(" " + Env.ALIYUN_PRO.name().toUpperCase() + ""));
   }
 
   @Test(expected = IllegalArgumentException.class)
