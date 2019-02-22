@@ -39,7 +39,7 @@ public class ZtsEmailService implements EmailService {
 
             logger.info("getInstanceMethod = {}", getInstanceMethod);
 
-            emailServiceClient = getInstanceMethod.invoke(emailServiceClientClazz);
+            emailServiceClient = getInstanceMethod.invoke(null);
 
             Class sendEmailRequestClazz =
                     Class.forName("com.zts.framework.email.client.SendEmailRequest");
