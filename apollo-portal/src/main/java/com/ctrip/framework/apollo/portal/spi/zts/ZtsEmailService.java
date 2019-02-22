@@ -42,7 +42,7 @@ public class ZtsEmailService implements EmailService, ApplicationListener<Contex
             Class sendEmailRequestClazz =
                     Class.forName("com.zts.framework.email.client.SendEmailRequest");
             sendEmailAsync = emailServiceClientClazz.getMethod("sendEmailAsync", sendEmailRequestClazz);
-            sendEmail = emailServiceClientClazz.getMethod("sendEmail", sendEmailRequestClazz);
+            sendEmail = emailServiceClientClazz.getMethod("sendEmailSync", sendEmailRequestClazz);
         } catch (Throwable e) {
             logger.error("init zts email service failed", e);
             Tracer.logError("init zts email service failed", e);
