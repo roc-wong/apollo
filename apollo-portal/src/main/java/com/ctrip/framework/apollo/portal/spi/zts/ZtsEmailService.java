@@ -33,7 +33,12 @@ public class ZtsEmailService implements EmailService {
             Class emailServiceClientClazz =
                     Class.forName("com.zts.framework.email.client.ZtsEmailClient");
 
+            logger.info("emailServiceClientClazz = {}", emailServiceClientClazz);
+
             Method getInstanceMethod = emailServiceClientClazz.getMethod("getInstance");
+
+            logger.info("getInstanceMethod = {}", getInstanceMethod);
+
             emailServiceClient = getInstanceMethod.invoke(null);
 
             Class sendEmailRequestClazz =
