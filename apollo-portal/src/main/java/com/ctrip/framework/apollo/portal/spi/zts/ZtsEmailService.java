@@ -7,29 +7,27 @@ import com.ctrip.framework.apollo.tracer.Tracer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 
-import javax.annotation.PostConstruct;
 import java.lang.reflect.Method;
 
 
-public class ZtsEmailService implements EmailService {
+public class ZtsEmailService implements EmailService, ApplicationListener<ContextRefreshedEvent> {
 
     private static final Logger logger = LoggerFactory.getLogger(ZtsEmailService.class);
-
-    private Object emailServiceClient;
-    private Method sendEmailAsync;
-    private Method sendEmail;
 
     @Autowired
     private ZtsEmailRequestBuilder emailRequestBuilder;
     @Autowired
     private PortalConfig portalConfig;
 
-    @PostConstruct
+    private Object emailServiceClient;
+    private Method sendEmailAsync;
+    private Method sendEmail;
+
     public void init() {
         try {
-//      initServiceClientConfig();
-
             Class emailServiceClientClazz =
                     Class.forName("com.zts.framework.email.client.ZtsEmailClient");
 
@@ -51,18 +49,6 @@ public class ZtsEmailService implements EmailService {
         }
     }
 
- /* private void initServiceClientConfig() throws Exception {
-
-    Class serviceClientConfigClazz = Class.forName("com.ctriposs.baiji.rpc.client.ServiceClientConfig");
-    Object serviceClientConfig = serviceClientConfigClazz.newInstance();
-    Method setFxConfigServiceUrlMethod = serviceClientConfigClazz.getMethod("setFxConfigServiceUrl", String.class);
-
-    setFxConfigServiceUrlMethod.invoke(serviceClientConfig, portalConfig.soaServerAddress());
-
-    Class serviceClientBaseClazz = Class.forName("com.ctriposs.baiji.rpc.client.ServiceClientBase");
-    Method initializeMethod = serviceClientBaseClazz.getMethod("initialize", serviceClientConfigClazz);
-    initializeMethod.invoke(null, serviceClientConfig);
-  }*/
 
     @Override
     public void send(Email email) {
@@ -82,4 +68,11 @@ public class ZtsEmailService implements EmailService {
         }
     }
 
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+        if (contextRefreshedEvent.getApplicationContext().getParent() == null) {
+            //root application context 没有parent，当spring容器初始化完成后就会执行该方法。
+            init();
+        }
+    }
 }
