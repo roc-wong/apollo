@@ -38,7 +38,7 @@ public class EmailConfiguration {
      * spring.profiles.active != ctrip
      */
     @Configuration
-    @ConditionalOnMissingProfile({"ctrip"})
+    @ConditionalOnMissingProfile({"ctrip", "zts"})
     public static class DefaultEmailConfiguration {
         @Bean
         @ConditionalOnMissingBean(EmailService.class)
