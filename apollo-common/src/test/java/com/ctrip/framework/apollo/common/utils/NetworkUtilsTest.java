@@ -1,8 +1,10 @@
 package com.ctrip.framework.apollo.common.utils;
 
+import org.assertj.core.util.Sets;
 import org.junit.Test;
 
 import java.net.NetworkInterface;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Objects;
@@ -33,11 +35,38 @@ public class NetworkUtilsTest {
                             }*/
                         }).collect(Collectors.toList());
 
-            List<String> hostAddress = physicalNICs.stream().flatMap(networkInterface -> Stream.of(networkInterface.getInetAddresses()))
-                    .map(Enumeration::nextElement).map(netAddress -> netAddress.getHostAddress())
+            List<String> hostAddress = physicalNICs.stream()
+                    .map(networkInterface -> Collections.list(networkInterface.getInetAddresses()))
+                    .flatMap(inetAddresses -> inetAddresses.stream())
+                    .map(netAddress -> netAddress.getHostAddress())
                     .collect(Collectors.toList());
             System.out.println(hostAddress);
         }
-
     }
+
+    @Test
+    public void testJDK8(){
+
+        Set<RNetworkInterface> networkInterfaces = Sets.newHashSet();
+        RNetworkInterface rNetworkInterface1 = new RNetworkInterface();
+        rNetworkInterface1.setAddrs(new RInetAddress[]{new RInetAddress("127.0.0.1")});
+
+        RNetworkInterface rNetworkInterface2 = new RNetworkInterface();
+        rNetworkInterface2.setAddrs(new RInetAddress[]{new RInetAddress("127.0.0.2"), new RInetAddress("127.0.0.3")});
+
+        RNetworkInterface rNetworkInterface3 = new RNetworkInterface();
+        rNetworkInterface3.setAddrs(new RInetAddress[]{new RInetAddress("127.0.0.4"), new RInetAddress("127.0.0.5")});
+
+        networkInterfaces.add(rNetworkInterface1);
+        networkInterfaces.add(rNetworkInterface2);
+        networkInterfaces.add(rNetworkInterface3);
+
+        List<String> hostAddress = networkInterfaces.stream()
+                .map(networkInterface -> Collections.list(networkInterface.getInetAddresses()))
+                .flatMap(inetAddresses -> inetAddresses.stream())
+                .map(netAddress -> netAddress.getHostAddress())
+                .collect(Collectors.toList());
+        System.out.println(hostAddress);
+    }
+
 }
