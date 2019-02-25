@@ -6,12 +6,15 @@ import com.ctrip.framework.apollo.portal.spi.EmailService;
 import com.ctrip.framework.apollo.portal.spi.ctrip.CtripEmailRequestBuilder;
 import com.ctrip.framework.apollo.portal.spi.ctrip.CtripEmailService;
 import com.ctrip.framework.apollo.portal.spi.defaultimpl.DefaultEmailService;
-import com.ctrip.framework.apollo.portal.spi.zts.ZtsEmailRequestBuilder;
 import com.ctrip.framework.apollo.portal.spi.zts.ZtsEmailService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
 
 @Configuration
 public class EmailConfiguration {
@@ -54,14 +57,23 @@ public class EmailConfiguration {
     @Profile("zts")
     public static class ZtsEmailConfiguration {
 
-        @Bean
-        public EmailService ztsEmailService() {
-            return new ZtsEmailService();
+        @Bean(name = "threadPoolTaskExecutor")
+        public Executor threadPoolTaskExecutor() {
+            ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
+            threadPoolTaskExecutor.setCorePoolSize(2);
+            threadPoolTaskExecutor.setMaxPoolSize(10);
+            threadPoolTaskExecutor.setQueueCapacity(200);
+            threadPoolTaskExecutor.setKeepAliveSeconds(300);
+            threadPoolTaskExecutor.setThreadGroupName("Apollo-Email-ThreadPool");
+            threadPoolTaskExecutor.setThreadNamePrefix("Apollo-Email-Thread/");
+            threadPoolTaskExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+            threadPoolTaskExecutor.setWaitForTasksToCompleteOnShutdown(true);
+            return threadPoolTaskExecutor;
         }
 
         @Bean
-        public ZtsEmailRequestBuilder emailRequestBuilder() {
-            return new ZtsEmailRequestBuilder();
+        public EmailService ztsEmailService() {
+            return new ZtsEmailService();
         }
     }
 }

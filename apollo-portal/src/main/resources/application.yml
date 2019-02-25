@@ -13,6 +13,25 @@ spring:
       ignored-interfaces:
       - docker0
       - veth.*
+  mail:
+    host: smtp.qq.com
+    username: roc.wong@foxmail.com
+    password: nosfmvajopfhbbca
+    port: 465
+    properties:
+      mail:
+        smtp:
+          auth: true
+          connectiontimeout: 5000
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+          starttls:
+            enable: true
+            required: true
+          timeout: 5000
+        transport:
+          protocol: smtp
+
 
 server:
   port: 8070
