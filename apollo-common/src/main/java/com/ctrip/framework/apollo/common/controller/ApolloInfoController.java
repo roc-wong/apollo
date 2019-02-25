@@ -48,7 +48,7 @@ public class ApolloInfoController {
     public Map<String, Object> getHostAddress() {
         Map<String, Object> results = Maps.newHashMap();
         try {
-            Set<NetworkInterface> physicalNICs = NetworkUtils.getPhysicalNICs();
+            Set<NetworkInterface> physicalNICs = NetworkUtils.getNICs();
             if (Objects.nonNull(physicalNICs)) {
                 List<String> hostAddress = physicalNICs.stream().flatMap(networkInterface -> Stream.of(networkInterface.getInetAddresses()))
                         .map(Enumeration::nextElement).map(inetAddress -> inetAddress.getHostAddress())
