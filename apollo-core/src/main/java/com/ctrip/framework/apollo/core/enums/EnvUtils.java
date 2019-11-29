@@ -27,6 +27,10 @@ public final class EnvUtils {
                 return Env.TOOLS;
             case "ALIYUN_PRO":
                 return Env.ALIYUN_PRO;
+            case "SZY_PRO":
+                return Env.SZY_PRO;
+            case "HWY_PRO":
+                return Env.HWY_PRO;
             default:
                 return Env.UNKNOWN;
         }

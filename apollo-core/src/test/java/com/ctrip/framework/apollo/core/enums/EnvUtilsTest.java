@@ -1,8 +1,8 @@
 package com.ctrip.framework.apollo.core.enums;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class EnvUtilsTest {
 
@@ -13,6 +13,8 @@ public class EnvUtilsTest {
     assertEquals(Env.UAT, EnvUtils.transformEnv(" " + Env.UAT.name().toUpperCase() + ""));
     assertEquals(Env.UNKNOWN, EnvUtils.transformEnv("someInvalidEnv"));
     assertEquals(Env.ALIYUN_PRO, EnvUtils.transformEnv("ALIYUN_PRO"));
+    assertEquals(Env.SZY_PRO, EnvUtils.transformEnv("SZY_PRO"));
+    assertEquals(Env.HWY_PRO, EnvUtils.transformEnv("HWY_PRO"));
   }
 
   @Test
@@ -21,6 +23,8 @@ public class EnvUtilsTest {
     assertEquals(Env.FAT, Env.fromString(Env.FAT.name().toLowerCase()));
     assertEquals(Env.UAT, Env.fromString(" " + Env.UAT.name().toUpperCase() + ""));
     assertEquals(Env.ALIYUN_PRO, Env.fromString(" " + Env.ALIYUN_PRO.name().toUpperCase() + ""));
+    assertEquals(Env.SZY_PRO, Env.fromString(" " + Env.SZY_PRO.name().toUpperCase() + ""));
+    assertEquals(Env.HWY_PRO, Env.fromString(" " + Env.HWY_PRO.name().toUpperCase() + ""));
   }
 
   @Test(expected = IllegalArgumentException.class)

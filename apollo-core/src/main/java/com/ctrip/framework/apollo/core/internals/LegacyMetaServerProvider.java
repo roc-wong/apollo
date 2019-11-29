@@ -32,6 +32,8 @@ public class LegacyMetaServerProvider implements MetaServerProvider {
     domains.put(Env.LPT, getMetaServerAddress(prop, "lpt_meta", "lpt.meta"));
     domains.put(Env.PRO, getMetaServerAddress(prop, "pro_meta", "pro.meta"));
     domains.put(Env.ALIYUN_PRO, getMetaServerAddress(prop, "aliyun_pro_meta", "aliyun_pro.meta"));
+    domains.put(Env.SZY_PRO, getMetaServerAddress(prop, "szy_pro_meta", "szy_pro.meta"));
+    domains.put(Env.HWY_PRO, getMetaServerAddress(prop, "hwy_pro_meta", "hwy_pro.meta"));
   }
 
   private String getMetaServerAddress(Properties prop, String sourceName, String propName) {
