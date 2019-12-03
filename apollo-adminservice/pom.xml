@@ -101,11 +101,20 @@
 			<plugin>
 				<groupId>com.spotify</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
-				<version>0.4.13</version>
+				<version>1.2.0</version>
 				<configuration>
-					<imageName>${project.artifactId}</imageName>
+					<!--Dockerfile文件所在目录-->
 					<dockerDirectory>src/main/docker</dockerDirectory>
+					<imageName>${project.artifactId}</imageName>
+					<imageTags>
+						<!--docker的tag为项目版本号、latest, 实际测试过程中发现，latest tag会默认生成-->
+						<imageTag>${project.version}</imageTag>
+						<imageTag>latest</imageTag>
+					</imageTags>
+					<!-- optionally overwrite tags every time image is built with docker:build -->
+					<forceTags>true</forceTags>
 					<resources>
+						<!-- 将打包文件放入dockerDirectory指定的位置 -->
 						<resource>
 							<targetPath>/</targetPath>
 							<directory>${project.build.directory}</directory>
