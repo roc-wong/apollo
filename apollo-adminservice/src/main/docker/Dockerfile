@@ -13,8 +13,8 @@ ENV DS_URL ""
 ENV DS_USERNAME ""
 ENV DS_PASSWORD ""
 
-RUN echo "http://mirrors.aliyun.com/alpine/v3.8/main" > /etc/apk/repositories \
-    && echo "http://mirrors.aliyun.com/alpine/v3.8/community" >> /etc/apk/repositories \
+RUN echo "http://mirrors.aliyun.com/alpine/v3.9/main" > /etc/apk/repositories \
+    && echo "http://mirrors.aliyun.com/alpine/v3.9/community" >> /etc/apk/repositories \
     && apk update upgrade \
     && apk add --no-cache procps unzip curl bash tzdata tini busybox-extras \
     && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
