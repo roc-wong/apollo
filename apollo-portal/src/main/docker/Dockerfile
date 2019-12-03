@@ -34,7 +34,7 @@ COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
 RUN unzip /apollo-portal/apollo-portal-${VERSION}-github.zip -d /apollo-portal \
     && rm -rf /apollo-portal/apollo-portal-${VERSION}-github.zip \
     && sed -i '$d' /apollo-portal/scripts/startup.sh \
-    && chmod +x /apollo-portal/scripts/startup.sh \
+    && chmod +x /apollo-portal/scripts/startup.sh
 #    && echo "tail -f /dev/null" >> /apollo-portal/scripts/startup.sh
 
 EXPOSE $SERVER_PORT

@@ -28,7 +28,7 @@ COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
 RUN unzip /apollo-configservice/apollo-configservice-${VERSION}-github.zip -d /apollo-configservice \
     && rm -rf /apollo-configservice/apollo-configservice-${VERSION}-github.zip \
     && sed -i '$d' /apollo-configservice/scripts/startup.sh \
-    && chmod +x /apollo-configservice/scripts/startup.sh \
+    && chmod +x /apollo-configservice/scripts/startup.sh
 #    && echo "tail -f /dev/null" >> /apollo-configservice/scripts/startup.sh
 
 EXPOSE $SERVER_PORT
