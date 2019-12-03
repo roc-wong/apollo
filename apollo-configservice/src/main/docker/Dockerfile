@@ -3,7 +3,7 @@
 # 2. Build with: docker build -t apollo-configservice .
 # 3. Run with: docker run -p 8080:8080 -e DS_URL="jdbc:mysql://fill-in-the-correct-server:3306/ApolloConfigDB?characterEncoding=utf8" -e DS_USERNAME=FillInCorrectUser -e DS_PASSWORD=FillInCorrectPassword -d -v /tmp/logs:/opt/logs --name apollo-configservice apollo-configservice
 
-FROM openjdk:8-jre-alpine
+FROM openjdk:8-jdk-alpine
 MAINTAINER ameizi <sxyx2008@163.com>
 
 ENV VERSION 1.7.0-SNAPSHOT
@@ -16,18 +16,24 @@ ENV DS_PASSWORD ""
 RUN echo "http://mirrors.aliyun.com/alpine/v3.8/main" > /etc/apk/repositories \
     && echo "http://mirrors.aliyun.com/alpine/v3.8/community" >> /etc/apk/repositories \
     && apk update upgrade \
-    && apk add --no-cache procps unzip curl bash tzdata \
+    && apk add --no-cache procps unzip curl bash tzdata tini busybox-extras \
     && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo "Asia/Shanghai" > /etc/timezone
 
 ADD apollo-configservice-${VERSION}-github.zip /apollo-configservice/apollo-configservice-${VERSION}-github.zip
 
+# copy arthas, required telnet in busybox-extras
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+
 RUN unzip /apollo-configservice/apollo-configservice-${VERSION}-github.zip -d /apollo-configservice \
     && rm -rf /apollo-configservice/apollo-configservice-${VERSION}-github.zip \
     && sed -i '$d' /apollo-configservice/scripts/startup.sh \
     && chmod +x /apollo-configservice/scripts/startup.sh \
-    && echo "tail -f /dev/null" >> /apollo-configservice/scripts/startup.sh
+#    && echo "tail -f /dev/null" >> /apollo-configservice/scripts/startup.sh
 
 EXPOSE $SERVER_PORT
 
-CMD ["/apollo-configservice/scripts/startup.sh"]
+# Tini is now available at /sbin/tini
+ENTRYPOINT ["/sbin/tini", "--"]
+
+CMD ["/apollo-configservice/scripts/docker-entrypoint.sh"]
