@@ -238,8 +238,20 @@ public class PortalConfig extends RefreshableConfig {
     return getValue("serverName");
   }
 
+  public String portalClientName() {
+    return getValue("portalClientName");
+  }
+
   public String casServerLoginUrl() {
     return getValue("casServerLoginUrl");
+  }
+
+  public String casServerName() {
+    return getValue("casServerName");
+  }
+
+  public String casServerLogoutUrl() {
+    return getValue("casServerLogoutUrl");
   }
 
   public String casServerUrlPrefix() {

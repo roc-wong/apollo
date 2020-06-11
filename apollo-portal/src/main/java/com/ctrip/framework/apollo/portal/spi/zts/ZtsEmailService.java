@@ -15,7 +15,12 @@ import javax.mail.internet.MimeMessage;
 import java.util.Date;
 import java.util.Objects;
 
-
+/**
+ * 使用QQ邮箱进行邮件发送
+ *
+ * @author roc
+ * @date 2020/6/11 17:22
+ */
 public class ZtsEmailService implements EmailService {
 
     private static final Logger logger = LoggerFactory.getLogger(ZtsEmailService.class);
@@ -30,9 +35,9 @@ public class ZtsEmailService implements EmailService {
     public void send(Email email) {
 
         try {
-            if(portalConfig.isSendEmailAsync() ){
+            if (portalConfig.isSendEmailAsync()) {
                 sendEmailAsync(email);
-            } else{
+            } else {
                 sendHtmlMail(email);
             }
         } catch (Throwable e) {
@@ -53,7 +58,7 @@ public class ZtsEmailService implements EmailService {
             logger.info("Current thread is {}", Thread.currentThread());
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, true);
-            if(Objects.nonNull(email.getRecipients())){
+            if (Objects.nonNull(email.getRecipients())) {
                 mimeMessageHelper.setTo(email.getRecipients().toArray(new String[email.getRecipients().size()]));
             }
             mimeMessageHelper.setReplyTo(email.getSenderEmailAddress());

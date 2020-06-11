@@ -177,5 +177,14 @@
 				</dependency>
 			</dependencies>
 		</profile>
+		<profile>
+			<id>zts</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.springframework.security</groupId>
+					<artifactId>spring-security-cas</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
 	</profiles>
 </project>
