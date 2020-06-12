@@ -1,12 +1,13 @@
 package com.ctrip.framework.apollo.portal.spi.zts.portal.domain;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * @author roc
  * @since 2020/6/10 14:01
  */
-public class ApiResponse<T> {
+public class ApiResponse<T> extends ApiErrorResponse{
 
     private int total;
     private int count;
@@ -34,5 +35,14 @@ public class ApiResponse<T> {
 
     public void setItems(List<T> items) {
         this.items = items;
+    }
+
+    @Override
+    public String toString() {
+        return "{\"_class\":\"ApiResponse\", " +
+                "\"total\":\"" + total + "\"" + ", " +
+                "\"count\":\"" + count + "\"" + ", " +
+                "\"items\":" + (items == null ? "null" : Arrays.toString(items.toArray())) +
+                "}";
     }
 }

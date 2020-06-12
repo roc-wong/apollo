@@ -242,6 +242,10 @@ public class PortalConfig extends RefreshableConfig {
     return getValue("portalClientName");
   }
 
+  public String casClientAppCode() {
+    return getValue("casClientAppCode");
+  }
+
   public String casServerLoginUrl() {
     return getValue("casServerLoginUrl");
   }
