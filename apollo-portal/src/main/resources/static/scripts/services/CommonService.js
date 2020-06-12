@@ -5,6 +5,11 @@ appService.service('CommonService', ['$resource', '$q', 'AppUtil',
             method: 'GET',
             isArray: false,
             url: AppUtil.prefixPath() + '/page-settings'
+        },
+        cas_login_url: {
+            method: 'GET',
+            isArray: false,
+            url: AppUtil.prefixPath() + '/utils/getCasLoginUrl'
         }
     });
 
@@ -12,6 +17,9 @@ appService.service('CommonService', ['$resource', '$q', 'AppUtil',
     return {
         getPageSetting: function () {
             return AppUtil.ajax(resource.page_setting, {});
+        },
+        getCasLoginUrl: function () {
+            return AppUtil.ajax(resource.cas_login_url, {});
         }
     }
 }]);

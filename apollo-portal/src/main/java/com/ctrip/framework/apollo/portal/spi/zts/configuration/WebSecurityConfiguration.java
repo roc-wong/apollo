@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.cas.ServiceProperties;
 import org.springframework.security.cas.authentication.CasAuthenticationProvider;
 import org.springframework.security.cas.web.CasAuthenticationEntryPoint;
@@ -22,8 +23,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 
 import javax.sql.DataSource;
 
@@ -53,55 +56,34 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private PortalConfig portalConfig;
 
+    @Autowired
+    private DataSource dataSource;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(casAuthenticationProvider());
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setUserDetailsService(jdbcUserDetailsManager(auth, dataSource));
+        daoAuthenticationProvider.setPasswordEncoder(new BCryptPasswordEncoder());
+        auth.authenticationProvider(daoAuthenticationProvider);
     }
-
-    /*@Override
-    protected void configure(HttpSecurity http) throws Exception {
-        *//*
-        http.csrf().disable();
-        http.formLogin().permitAll();
-        http.logout().logoutSuccessHandler(new CustomLogoutSuccessHandler()).permitAll();
-        http.authorizeRequests().anyRequest().authenticated();
-        http.exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler()).authenticationEntryPoint(new CustomAuthenticationEntryPoint());
-
-        http.addFilterBefore(customFilterSecurityInterceptor, FilterSecurityInterceptor.class);
-        customUsernamePasswordAuthenticationFilter.setAuthenticationSuccessHandler(new CustomAuthenticationSuccessHandler());
-        customUsernamePasswordAuthenticationFilter.setAuthenticationFailureHandler(new CustomAuthenticationFailureHandler());
-        http.addFilterAt(customUsernamePasswordAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        *//*
-        http.csrf().disable().authorizeRequests().anyRequest().permitAll().and().logout().permitAll();
-    }*/
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-       /* http.authorizeRequests()//配置安全策略
-                .anyRequest().authenticated()//其余的所有请求都需要验证
-                .and()
-                .csrf().disable()
-                .logout()
-                .logoutUrl(casProperties.getClientLogoutUrl())
-                .permitAll()
-                //定义logout不需要验证
-                .and().headers().frameOptions().disable()
-                .and()
-                .formLogin()
-                //使用form表单登录
-                .loginPage(casProperties.getClientLoginUrl());*/
-
         http.csrf().disable();
         http.headers().frameOptions().sameOrigin();
         http.authorizeRequests()
-                .antMatchers("/login/**", "/prometheus/**", "/metrics/**", "/openapi/**", "/vendor/**", "/styles/**", "/scripts/**", "/views/**", "/img/**", "/i18n/**", "/prefix-path").permitAll()
+                .antMatchers("/utils/**", "/signin", "/login/**", "/prometheus/**", "/metrics/**", "/openapi/**", "/vendor/**", "/styles/**", "/scripts/**", "/views/**", "/img/**", "/i18n/**", "/prefix-path").permitAll()
                 .antMatchers("/**").hasAnyRole(USER_ROLE);
-        http.formLogin().loginPage("/signin").defaultSuccessUrl("/", true).permitAll().failureUrl("/signin?#/error").and()
+        http.formLogin().loginPage("/signin").defaultSuccessUrl("/", true).permitAll()
+                .failureUrl("/signin?#/error").and()
+//                .authenticationProvider(daoAuthenticationProvider())
                 .httpBasic();
-        /*http.logout().logoutUrl("/user/logout").invalidateHttpSession(true).clearAuthentication(true)
+/*        http.logout().logoutUrl("/user/logout").invalidateHttpSession(true).clearAuthentication(true)
                 .logoutSuccessUrl("/signin?#/logout");*/
-//        http.exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/signin"));
-        http.exceptionHandling().authenticationEntryPoint(casAuthenticationEntryPoint())
+        http.exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/signin"))
+                //如果使用下面的authenticationEntryPoint，将不会再转跳到Apollo的登录页面，而是直接转跳到蜂巢的登录页面
+//        http.exceptionHandling().authenticationEntryPoint(casAuthenticationEntryPoint())
                 .and()
                 .addFilter(casAuthenticationFilter())
                 .addFilterBefore(casLogoutFilter(), LogoutFilter.class)
@@ -213,7 +195,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     public LogoutFilter casLogoutFilter() {
         // 设置回调地址，以免注销后页面不再跳转
         String logoutSuccessUrl = portalConfig.casServerName() + portalConfig.casServerUrlPrefix() + portalConfig.casServerLogoutUrl();
-        LogoutFilter logoutFilter = new LogoutFilter(logoutSuccessUrl, new SecurityContextLogoutHandler());
+        String referrer = "?service=" + portalConfig.portalClientName() + "/signin?#/logout";
+
+        SimpleUrlLogoutSuccessHandler urlLogoutSuccessHandler = new SimpleUrlLogoutSuccessHandler();
+        urlLogoutSuccessHandler.setDefaultTargetUrl(logoutSuccessUrl + referrer);
+        urlLogoutSuccessHandler.setUseReferer(false);
+
+        LogoutFilter logoutFilter = new LogoutFilter(urlLogoutSuccessHandler, new SecurityContextLogoutHandler());
         logoutFilter.setFilterProcessesUrl(PORTAL_LOGOUT_URL);
         return logoutFilter;
     }
