@@ -46,7 +46,7 @@ import javax.sql.DataSource;
  */
 @Profile("zts")
 @Configuration
-@EnableWebSecurity(debug = true)//已经自动配置了，此处只是为了打印debug信息
+@EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     public static final String USER_ROLE = "user";
