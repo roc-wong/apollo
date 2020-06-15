@@ -12,6 +12,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
@@ -105,6 +106,25 @@ public class RabcUserService implements UserService {
         result.addAll(users.stream().map(UserPO::toUserInfo).collect(Collectors.toList()));
 
         return result;
+    }
+
+    @Transactional
+    @Override
+    public void createOrUpdate(UserPO user) {
+        String username = user.getUsername();
+
+        User userDetails = new User(username, encoder.encode(user.getPassword()), authorities);
+
+        if (userDetailsManager.userExists(username)) {
+            userDetailsManager.updateUser(userDetails);
+        } else {
+            userDetailsManager.createUser(userDetails);
+        }
+
+        UserPO managedUser = userRepository.findByUsername(username);
+        managedUser.setEmail(user.getEmail());
+
+        userRepository.save(managedUser);
     }
 
     public UserPO findByUsernameOrEmail(String loginUserName, String portalEmail) {
