@@ -11,6 +11,14 @@ appService.service('UserService', ['$resource', '$q', 'AppUtil', function ($reso
         create_or_update_user: {
             method: 'POST',
             url: AppUtil.prefixPath() + '/users'
+        },
+        authorize: {
+            method: 'POST',
+            url: AppUtil.prefixPath() + '/oaUsers/authorize'
+        },
+        cancelAuthorization: {
+            method: 'POST',
+            url: AppUtil.prefixPath() + '/oaUsers/cancelAuthorization'
         }
     });
     return {
@@ -51,6 +59,29 @@ appService.service('UserService', ['$resource', '$q', 'AppUtil', function ($reso
                                          d.reject(result);
                                      });
             return d.promise;   
+        },
+        authorize: function (user) {
+            var d = $q.defer();
+            user_resource.authorize({}, user,
+                function (result) {
+                    d.resolve(result);
+                },
+                function (result) {
+                    d.reject(result);
+                });
+            return d.promise;
+        },
+        cancelAuthorization: function (user) {
+            var d = $q.defer();
+            user_resource.cancelAuthorization({}, user,
+                function (result) {
+                    d.resolve(result);
+                },
+                function (result) {
+                    d.reject(result);
+                });
+            return d.promise;
         }
+
     }
 }]);

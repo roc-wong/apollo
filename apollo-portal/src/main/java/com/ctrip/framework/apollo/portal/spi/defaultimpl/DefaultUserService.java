@@ -1,5 +1,6 @@
 package com.ctrip.framework.apollo.portal.spi.defaultimpl;
 
+import com.ctrip.framework.apollo.portal.entity.po.UserPO;
 import com.google.common.collect.Lists;
 
 import com.ctrip.framework.apollo.portal.entity.bo.UserInfo;
@@ -32,6 +33,11 @@ public class DefaultUserService implements UserService {
       return Lists.newArrayList(assembleDefaultUser());
     }
     return null;
+  }
+
+  @Override
+  public void createOrUpdate(UserPO user) {
+    throw new UnsupportedOperationException("Create or update user operation is unsupported");
   }
 
   private UserInfo assembleDefaultUser() {

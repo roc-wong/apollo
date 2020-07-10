@@ -255,10 +255,18 @@
                                 <div class="form-group" style="color: red">
                                     <small ng-bind="info"></small>
                                 </div>
-                                <div class="col-xs-12 form-group pull-right">
-                                    <input type="submit" name="login-submit" id="login-submit" tabindex="4"
-                                           class="form-control btn btn-login" value="{{'Login.Login' | translate }}">
+                                <div class="form-group">
+                                    <div class="col-xs-6 form-group pull-left">
+                                        <a href="{{casLoginUrl}}" class="form-control btn btn-login" tabindex="4">
+                                            蜂巢账户登录
+                                        </a>
+                                    </div>
+                                    <div class="col-xs-6 form-group pull-right">
+                                        <input type="submit" name="login-submit" id="login-submit" tabindex="4"
+                                               class="form-control btn btn-login" value="{{'Login.Login' | translate }}">
+                                    </div>
                                 </div>
+
                             </form>
                         </div>
                     </div>
@@ -286,6 +294,7 @@
 <script type="application/javascript" src="scripts/app.js"></script>
 <script type="application/javascript" src="scripts/AppUtils.js"></script>
 <script type="application/javascript" src="scripts/directive/directive.js"></script>
+<script type="application/javascript" src="scripts/services/CommonService.js"></script>
 <script type="application/javascript" src="scripts/controller/LoginController.js"></script>
 
 

@@ -29,13 +29,13 @@ cd ..
 # package config-service and admin-service
 echo "==== starting to build config-service and admin-service ===="
 
-mvn clean package -DskipTests -pl apollo-configservice,apollo-adminservice -am -Dapollo_profile=github -Dspring_datasource_url=$apollo_config_db_url -Dspring_datasource_username=$apollo_config_db_username -Dspring_datasource_password=$apollo_config_db_password
+#mvn clean package -DskipTests -pl apollo-configservice,apollo-adminservice -am -Dapollo_profile=github -Dspring_datasource_url=$apollo_config_db_url -Dspring_datasource_username=$apollo_config_db_username -Dspring_datasource_password=$apollo_config_db_password
 
 echo "==== building config-service and admin-service finished ===="
 
 echo "==== starting to build portal ===="
 
 ## 为了支持邮件通知功能，在Portal中增加了Spring Mail功能，编译时需增加Profile=zts
-mvn clean package -DskipTests -pl apollo-portal -am -Dapollo_profile=github,auth,zts -Dspring_datasource_url=$apollo_portal_db_url -Dspring_datasource_username=$apollo_portal_db_username -Dspring_datasource_password=$apollo_portal_db_password $META_SERVERS_OPTS
+mvn clean package -DskipTests -pl apollo-portal -am -Dapollo_profile=github,zts -Pzts -Dspring_datasource_url=$apollo_portal_db_url -Dspring_datasource_username=$apollo_portal_db_username -Dspring_datasource_password=$apollo_portal_db_password $META_SERVERS_OPTS
 
 echo "==== building portal finished ===="

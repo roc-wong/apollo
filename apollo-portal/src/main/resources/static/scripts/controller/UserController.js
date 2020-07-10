@@ -22,5 +22,21 @@ function UserController($scope, $window, $translate, toastr, AppUtil, UserServic
             AppUtil.showErrorMsg(result, $translate.instant('UserMange.CreateFailed'));
         })
 
+    };
+
+    $scope.authorize = function () {
+        UserService.authorize($scope.user).then(function (result) {
+            toastr.success($translate.instant('UserMange.Authorized'));
+        }, function (result) {
+            AppUtil.showErrorMsg(result, $translate.instant('UserMange.CreateFailed'));
+        })
+    };
+
+    $scope.cancelAuthorization = function () {
+        UserService.cancelAuthorization($scope.user).then(function (result) {
+            toastr.success($translate.instant('UserMange.CancelAuthorization'));
+        }, function (result) {
+            AppUtil.showErrorMsg(result, $translate.instant('UserMange.CreateFailed'));
+        })
     }
 }
